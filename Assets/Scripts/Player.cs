@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+using Mirror;
+
+[RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(NetworkTransformReliable))]
+public class Player : NetworkBehaviour
 {
     [Header("Basic Settings")]
     [SerializeField, Range(0f, 10f)] protected float speed;
@@ -19,6 +23,9 @@ public class Player : MonoBehaviour
     protected void Awake()
     {
         mainCamera = Camera.main;
+        
+        mainCamera.GetComponent<CameraController>().LocalPlayer = this; // Set LocalPlayer for camera to this device
+
         playerInput = GetComponent<PlayerInput>();
         move = playerInput.actions["Move"];
         look = playerInput.actions["Look"];
@@ -26,19 +33,22 @@ public class Player : MonoBehaviour
 
     protected void Update()
     {
-        // Controls
-
-        // 1. Movement controls
-        Vector2 moveControls = move.ReadValue<Vector2>();
-
-        transform.position += new Vector3(moveControls.x, moveControls.y, 0) * speed * Time.deltaTime;   // Main moving
-
-        // 2. Rotation controls
-        if (look.inProgress)
+        if (isOwned)
         {
-            Vector2 lookControls = look.ReadValue<Vector2>();
-            angle = Vector2.Angle(Vector2.up, lookControls) * ((lookControls.x > 0) ? -1 : 1);
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            // Controls
+
+            // 1. Movement controls
+            Vector2 moveControls = move.ReadValue<Vector2>();
+
+            transform.position += new Vector3(moveControls.x, moveControls.y, 0) * speed * Time.deltaTime;   // Main moving
+
+            // 2. Rotation controls
+            if (look.inProgress)
+            {
+                Vector2 lookControls = look.ReadValue<Vector2>();
+                angle = Vector2.Angle(Vector2.up, lookControls) * ((lookControls.x > 0) ? -1 : 1);
+                transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
         }
     }
 }
