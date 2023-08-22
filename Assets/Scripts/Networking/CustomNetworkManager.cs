@@ -29,13 +29,14 @@ public class CustomNetworkManager : NetworkManager
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         GameObject player = Instantiate(playerPrefab);
+        player.GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
         NetworkServer.AddPlayerForConnection(conn, player);
 
         players.Add(player.GetComponent<Player>());
         
         foreach (ShootingPlayer _player in players)
         {
-            _player.Activated = (players.Count > 0);   
+            _player.Activated = (players.Count > 1);   
         }
     }
 
@@ -49,7 +50,7 @@ public class CustomNetworkManager : NetworkManager
                 players.Remove(player);
                 correction = 0;
             }
-            else player.Activated = (players.Count - correction > 0);
+            else player.Activated = (players.Count - correction > 1);
         NetworkServer.DestroyPlayerForConnection(conn);
     }
 }
