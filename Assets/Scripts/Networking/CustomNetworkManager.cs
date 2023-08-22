@@ -45,10 +45,11 @@ public class CustomNetworkManager : NetworkManager
         foreach (ShootingPlayer player in players)
             if (player.GetComponent<NetworkIdentity>().connectionToClient == conn)
             {
+                NetworkServer.Destroy(player.gameObject);
                 players.Remove(player);
                 correction = 0;
             }
             else player.Activated = (players.Count - correction > 0);
-        base.OnServerDisconnect(conn);
+        NetworkServer.DestroyPlayerForConnection(conn);
     }
 }

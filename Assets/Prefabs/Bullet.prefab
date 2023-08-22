@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -6150847073026828631}
   - component: {fileID: 114098727345330179}
   - component: {fileID: 8898967396253450221}
+  - component: {fileID: 590055671117118046}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -124,7 +125,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!114 &-6150847073026828631
 MonoBehaviour:
@@ -142,8 +143,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   damage: 1
-  speed: 5
-  lifetime: 0
+  speed: 10
 --- !u!114 &114098727345330179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,9 +190,32 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChange: 1
+  onlySyncOnChange: 0
   onlySyncOnChangeCorrectionMultiplier: 2
   rotationSensitivity: 0.01
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &590055671117118046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2920781450672751132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2cbc52526ea384ba280d13cd1a57b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 6305612726403414918}
+  clientAuthority: 0
+  syncVelocity: 1
+  clearVelocity: 0
+  velocitySensitivity: 0.1
+  syncAngularVelocity: 1
+  clearAngularVelocity: 0
+  angularVelocitySensitivity: 0.1

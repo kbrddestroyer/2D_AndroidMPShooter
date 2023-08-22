@@ -32,7 +32,7 @@ public class NetworkObjectPool : NetworkBehaviour
     [ServerCallback]
     private GameObject Add()
     {
-        GameObject ob = Instantiate(prefab.gameObject);
+        GameObject ob = Instantiate(prefab.gameObject, transform.position, transform.rotation);
         NetworkServer.Spawn(ob);
         SetObjectState(ob, false);
         return ob;

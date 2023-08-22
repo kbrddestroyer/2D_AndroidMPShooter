@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 1049337939651382837}
   - component: {fileID: 21020320270090047}
   - component: {fileID: 604579298326253303}
+  - component: {fileID: 3872798322948955399}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -211,7 +212,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!114 &8059605099387117842
 MonoBehaviour:
@@ -233,7 +234,6 @@ MonoBehaviour:
   bulletsPerSecond: 7
   joystickShotMinDistance: 0.75
   bullet: {fileID: 2920781450672751132, guid: 26365a427e19dfd41a4f8170e56201c1, type: 3}
-  objectPoolPrefab: {fileID: 5692424548815967957, guid: 19ec6f0a7c3ce974cb9ffaed56e31d94, type: 3}
   bulletSpawnPoint: {fileID: 4295279748357204041}
 --- !u!114 &1049337939651382837
 MonoBehaviour:
@@ -317,6 +317,29 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &3872798322948955399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049337939651382841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2cbc52526ea384ba280d13cd1a57b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 2444002047170626271}
+  clientAuthority: 0
+  syncVelocity: 1
+  clearVelocity: 0
+  velocitySensitivity: 0.1
+  syncAngularVelocity: 1
+  clearAngularVelocity: 0
+  angularVelocitySensitivity: 0.1
 --- !u!1 &7098000048573041219
 GameObject:
   m_ObjectHideFlags: 0

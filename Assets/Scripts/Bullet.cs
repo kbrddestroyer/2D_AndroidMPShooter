@@ -8,7 +8,6 @@ public class Bullet : NetworkBehaviour
 {
     [SerializeField, Range(1f, 10f)] private float damage;
     [SerializeField, Range(0f, 10f)] private float speed;
-    [SerializeField, Range(0f, 10f)] private float lifetime;
 
     public Transform StartPosition {
         set
@@ -25,6 +24,17 @@ public class Bullet : NetworkBehaviour
         {
             player.HP -= damage;
         }
+        CmdFree();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Player player = collision.gameObject.GetComponent<Player>();
+        if (player != null)
+        {
+            player.HP -= damage;
+        }
+        CmdFree();
     }
 
     [ClientRpc]

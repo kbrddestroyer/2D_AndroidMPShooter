@@ -19,6 +19,7 @@ public class Player : NetworkBehaviour
     [SerializeField, Range(0f, 10f)] protected float bulletsPerSecond;
     
     private TMP_Text coinsCounter;
+    private TMP_Text HPCounter;
     protected Camera mainCamera;
 
     protected PlayerInput playerInput;
@@ -47,7 +48,8 @@ public class Player : NetworkBehaviour
         set
         {
             // Deal damage, update GUI and play VFX
-            hp -= value;
+            hp = value;
+            if (isOwned) HPCounter.text = $"HP: {hp}";
             if (hp <= 0) Death();
         }
     }
@@ -63,6 +65,8 @@ public class Player : NetworkBehaviour
         look = playerInput.actions["Look"];
 
         coinsCounter = GameObject.Find("CoinsCounter").GetComponent<TMP_Text>();
+        HPCounter = GameObject.Find("HPCounter").GetComponent<TMP_Text>();
+        HP = maxHp;
     }
 
 #if UNITY_EDITOR
