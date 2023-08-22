@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Mirror;
+using Mirror.Discovery;
 
 public class CustomNetworkManager : NetworkManager
 {
-    public void setDestinationIP(string destination)
+    private static CustomNetworkManager instance;
+    private NetworkDiscovery networkDiscovery;
+    public static CustomNetworkManager Instance { get => instance; }
+
+    public override void Awake()
+    {
+        if (instance == null) instance = this;
+        base.Awake();
+
+        networkDiscovery = GetComponent<NetworkDiscovery>();
+    }
+
+    public void SetDestinationIP(string destination)
     {
         this.networkAddress = destination;
-    }
-
-    public void ConnectHost()
-    {
-        ConnectHost();
-    }
-
-    public void ConnectPlayer()
-    {
-        ConnectPlayer();
     }
 }

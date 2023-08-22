@@ -1,3 +1,4 @@
+using Mirror.Discovery;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,8 +8,6 @@ using UnityEngine.UIElements;
 
 public class GUIController : MonoBehaviour
 {
-    [Header("Requred objects")]
-    [SerializeField] private CustomNetworkManager networkManager;
     [Header("GUI")]
     [SerializeField] private GameObject mainUI;
     [SerializeField] private GameObject directConnectionUI;
@@ -22,12 +21,12 @@ public class GUIController : MonoBehaviour
 
     public void OnConnectButtonClick()
     {
-        networkManager.setDestinationIP(ipAddressInput.text);
-        networkManager.ConnectPlayer();
+        CustomNetworkManager.Instance.SetDestinationIP(ipAddressInput.text);
+        CustomNetworkManager.Instance.StartClient();
     }
 
     public void OnHostButtonClick()
     {
-        networkManager.ConnectHost();
+        CustomNetworkManager.Instance.StartHost();
     }
 }
