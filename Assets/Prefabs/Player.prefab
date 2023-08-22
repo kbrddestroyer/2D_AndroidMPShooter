@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1049337939651382839}
   - component: {fileID: 4550796519147104137}
   - component: {fileID: 2444002047170626271}
-  - component: {fileID: 1049337939651382840}
+  - component: {fileID: 8059605099387117842}
   - component: {fileID: 1049337939651382837}
   - component: {fileID: 21020320270090047}
   - component: {fileID: 604579298326253303}
@@ -213,7 +213,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &1049337939651382840
+--- !u!114 &8059605099387117842
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049337939651382841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7dcf3c2a9f09174891e7c32734265b9, type: 3}
+  m_Script: {fileID: 11500000, guid: a1059da1c0249f64ba3ec5172fad9b29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
@@ -230,7 +230,8 @@ MonoBehaviour:
   syncInterval: 0
   speed: 5
   maxHp: 10
-  bulletsPerSecond: 5
+  bulletsPerSecond: 7
+  joystickShotMinDistance: 0.75
   bullet: {fileID: 2920781450672751132, guid: 26365a427e19dfd41a4f8170e56201c1, type: 3}
   bulletSpawnPoint: {fileID: 4295279748357204041}
 --- !u!114 &1049337939651382837

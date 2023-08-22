@@ -11,26 +11,24 @@ using TMPro;
 
 [RequireComponent(typeof(NetworkIdentity))]
 [RequireComponent(typeof(NetworkTransformReliable))]
-public class Player : NetworkBehaviour, IShooting
+public class Player : NetworkBehaviour
 {
     [Header("Basic Settings")]
     [SerializeField, Range(0f, 10f)] protected float speed;
     [SerializeField, Range(0f, 10f)] protected float maxHp;
     [SerializeField, Range(0f, 10f)] protected float bulletsPerSecond;
-    [Header("Required Objects")]
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private Transform bulletSpawnPoint;
     
     private TMP_Text coinsCounter;
     protected Camera mainCamera;
     
-    private PlayerInput playerInput;
-    private InputAction move;
-    private InputAction look;
+    protected PlayerInput playerInput;
+    protected InputAction move;
+    protected InputAction look;
 
     private float angle = 0f;
     private float hp;
-    private float shootingTimePassed = 0f;
+
+    // Synchronised values
     [SyncVar(hook = nameof(ChangeCoins))] private int coins = 0;
 
     private void ChangeCoins(int _old, int _new) { this.coins = _new; }
@@ -67,30 +65,6 @@ public class Player : NetworkBehaviour, IShooting
         coinsCounter = GameObject.Find("CoinsCounter").GetComponent<TMP_Text>();
     }
 
-    [Command]
-    private void CmdCreateBullet()
-    {
-        Bullet bullet = CreateBullet();
-        NetworkServer.Spawn(bullet.gameObject);
-    }
-
-    private Bullet CreateBullet()
-    {
-        Bullet _bullet = Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
-        return _bullet;
-    }
-
-    [ClientCallback]
-    public void Shoot()
-    {
-        shootingTimePassed += Time.deltaTime;
-        if (shootingTimePassed >= 1f / bulletsPerSecond)
-        {
-            CmdCreateBullet();
-            shootingTimePassed = 0f;
-        }
-    }
-
     private void Death()
     {
         // TODO
@@ -98,7 +72,7 @@ public class Player : NetworkBehaviour, IShooting
         Destroy(this.gameObject);
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         if (isOwned)
         {
@@ -115,12 +89,6 @@ public class Player : NetworkBehaviour, IShooting
                 Vector2 lookControls = look.ReadValue<Vector2>();
                 angle = Vector2.Angle(Vector2.up, lookControls) * ((lookControls.x > 0) ? -1 : 1);
                 transform.rotation = Quaternion.Euler(0, 0, angle);
-
-                Debug.Log(Vector2.Distance(Vector2.zero, lookControls));
-                if (Vector2.Distance(Vector2.zero, lookControls) > 0.75)
-                {
-                    Shoot();
-                }
             }
         }
     }
