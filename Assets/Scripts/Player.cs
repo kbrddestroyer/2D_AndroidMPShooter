@@ -38,7 +38,7 @@ public class Player : NetworkBehaviour
 
         set {
             coins = value;
-            coinsCounter.text = $"Coins: {coins}";
+            if (isOwned) coinsCounter.text = $"Coins: {coins}";
         }
     }
 
@@ -52,7 +52,7 @@ public class Player : NetworkBehaviour
         }
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         mainCamera = Camera.main;
 

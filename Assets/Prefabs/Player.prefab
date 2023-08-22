@@ -233,6 +233,7 @@ MonoBehaviour:
   bulletsPerSecond: 7
   joystickShotMinDistance: 0.75
   bullet: {fileID: 2920781450672751132, guid: 26365a427e19dfd41a4f8170e56201c1, type: 3}
+  objectPoolPrefab: {fileID: 5692424548815967957, guid: 19ec6f0a7c3ce974cb9ffaed56e31d94, type: 3}
   bulletSpawnPoint: {fileID: 4295279748357204041}
 --- !u!114 &1049337939651382837
 MonoBehaviour:

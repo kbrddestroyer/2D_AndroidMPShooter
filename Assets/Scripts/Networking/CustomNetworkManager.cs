@@ -35,7 +35,7 @@ public class CustomNetworkManager : NetworkManager
         
         foreach (ShootingPlayer _player in players)
         {
-            _player.Activated = (players.Count > 1);   
+            _player.Activated = (players.Count > 0);   
         }
     }
 
@@ -48,7 +48,7 @@ public class CustomNetworkManager : NetworkManager
                 players.Remove(player);
                 correction = 0;
             }
-            else player.Activated = (players.Count - correction > 1);
+            else player.Activated = (players.Count - correction > 0);
         base.OnServerDisconnect(conn);
     }
 }

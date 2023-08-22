@@ -28,18 +28,12 @@ public class ShootingPlayer : Player, IShooting
     [Command]
     private void CmdCreateBullet()
     {
-        Bullet bullet = CreateBullet();
-        NetworkServer.Spawn(bullet.gameObject);
+        Bullet _bullet = GameObject.FindObjectOfType<NetworkObjectPool>().Get(bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
     }
-    
+
     #endregion
-    
+
     #region CLIENT
-    private Bullet CreateBullet()
-    {
-        Bullet _bullet = Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
-        return _bullet;
-    }
 
     [ClientCallback]
     public void Shoot()
