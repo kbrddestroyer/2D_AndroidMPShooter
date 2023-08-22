@@ -13,13 +13,28 @@ public class ShootingPlayer : Player, IShooting
 
     private float shootingTimePassed = 0f;
 
+    private bool activated = false;
+    public bool Activated {
+        [ClientRpc]
+        set
+        {
+            activated = true;
+            Camera.main.GetComponent<CameraController>().ChangeWaitingForPlayerValue(!value);
+        }
+    }
+
+    #region SERVER
+    
     [Command]
     private void CmdCreateBullet()
     {
         Bullet bullet = CreateBullet();
         NetworkServer.Spawn(bullet.gameObject);
     }
-
+    
+    #endregion
+    
+    #region CLIENT
     private Bullet CreateBullet()
     {
         Bullet _bullet = Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
@@ -36,6 +51,7 @@ public class ShootingPlayer : Player, IShooting
             shootingTimePassed = 0f;
         }
     }
+    #endregion
 
     protected override void Update()
     {

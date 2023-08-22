@@ -11,6 +11,8 @@ public class CustomNetworkManager : NetworkManager
     private NetworkDiscovery networkDiscovery;
     public static CustomNetworkManager Instance { get => instance; }
 
+    private List<Player> players = new List<Player>();
+
     public override void Awake()
     {
         if (instance == null) instance = this;
@@ -22,5 +24,31 @@ public class CustomNetworkManager : NetworkManager
     public void SetDestinationIP(string destination)
     {
         this.networkAddress = destination;
+    }
+
+    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    {
+        GameObject player = Instantiate(playerPrefab);
+        NetworkServer.AddPlayerForConnection(conn, player);
+
+        players.Add(player.GetComponent<Player>());
+        
+        foreach (ShootingPlayer _player in players)
+        {
+            _player.Activated = (players.Count > 1);   
+        }
+    }
+
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        int correction = 1;
+        foreach (ShootingPlayer player in players)
+            if (player.GetComponent<NetworkIdentity>().connectionToClient == conn)
+            {
+                players.Remove(player);
+                correction = 0;
+            }
+            else player.Activated = (players.Count - correction > 1);
+        base.OnServerDisconnect(conn);
     }
 }

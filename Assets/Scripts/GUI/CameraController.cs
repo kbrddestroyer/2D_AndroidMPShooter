@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +8,21 @@ public class CameraController : MonoBehaviour
     [Header("Basic Settings")]
     [SerializeField, Range(0f, 10f)] private float smoothness;
     [SerializeField, Range(0f, 10f)] private float triggerRadius;
+    [Header("Required objects")]
+    [SerializeField] private GameObject waitingForPlayerGUI;
     [Header("Editor only")]
     [SerializeField] private Color gizmoColor;
 
-    [SerializeField] private Player localPlayer;
+    private Player localPlayer;
 
     public Player LocalPlayer { get => localPlayer; set => localPlayer = value; }
 
     private bool isMoving = false;
+
+    public void ChangeWaitingForPlayerValue(bool value)
+    {
+        waitingForPlayerGUI.SetActive(value);
+    }
 
     private void Update()
     {

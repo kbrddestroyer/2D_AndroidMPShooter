@@ -20,7 +20,7 @@ public class Player : NetworkBehaviour
     
     private TMP_Text coinsCounter;
     protected Camera mainCamera;
-    
+
     protected PlayerInput playerInput;
     protected InputAction move;
     protected InputAction look;
@@ -64,6 +64,13 @@ public class Player : NetworkBehaviour
 
         coinsCounter = GameObject.Find("CoinsCounter").GetComponent<TMP_Text>();
     }
+
+#if UNITY_EDITOR
+    private void OnConnectedToServer()
+    {
+        Debug.LogWarning("Connected to server!");
+    }
+#endif
 
     private void Death()
     {
