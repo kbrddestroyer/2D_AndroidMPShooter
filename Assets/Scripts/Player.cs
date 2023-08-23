@@ -20,7 +20,6 @@ public class Player : NetworkBehaviour
     
     private TMP_Text coinsCounter;
     private TMP_Text HPCounter;
-    private TMP_Text deathMessage;
     protected Camera mainCamera;
 
     protected PlayerInput playerInput;
@@ -67,7 +66,6 @@ public class Player : NetworkBehaviour
 
         coinsCounter = GameObject.Find("CoinsCounter").GetComponent<TMP_Text>();
         HPCounter = GameObject.Find("HPCounter").GetComponent<TMP_Text>();
-        deathMessage = GameObject.Find("DeathMessage").GetComponent<TMP_Text>();
         HP = maxHp;
     }
 
@@ -78,21 +76,11 @@ public class Player : NetworkBehaviour
     }
 #endif
 
-    [Command]
-    private void CmdDestroy()
-    {
-        NetworkServer.Destroy(this.gameObject);
-    }
-
     private void Death()
     {
         // TODO
-        if (isOwned)
-        {
-            mainCamera.GetComponent<CameraController>().LocalPlayer = FindObjectOfType<Player>();
-            deathMessage.text = $"You died!\nCoins collected: {coins}";
-            CmdDestroy();
-        }
+        if (isOwned) mainCamera.GetComponent<CameraController>().LocalPlayer = null;
+        Destroy(this.gameObject);
     }
 
     protected virtual void Update()
