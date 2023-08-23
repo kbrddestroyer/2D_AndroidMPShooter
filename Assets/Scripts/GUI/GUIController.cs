@@ -29,4 +29,9 @@ public class GUIController : MonoBehaviour
     {
         CustomNetworkManager.Instance.StartHost();
     }
+
+    public void Log(string log)
+    {
+        Debug.Log(log);
+    }
 }
