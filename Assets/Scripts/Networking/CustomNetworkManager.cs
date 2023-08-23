@@ -30,6 +30,14 @@ public class CustomNetworkManager : NetworkManager
         this.networkAddress = destination;
     }
 
+    public override void OnClientError(TransportError error, string reason)
+    {
+        Debug.LogWarning(reason);
+        SceneLoader.Instance.LoadScene("Lobby");
+        
+        base.OnClientError(error, reason);
+    }
+
     #region SERVER
     public void RemovePlayerFromList(Player player)
     {

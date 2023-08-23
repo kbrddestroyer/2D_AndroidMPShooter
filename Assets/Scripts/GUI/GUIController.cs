@@ -22,11 +22,14 @@ public class GUIController : MonoBehaviour
     public void OnConnectButtonClick()
     {
         CustomNetworkManager.Instance.SetDestinationIP(ipAddressInput.text);
+
+        SceneLoader.Instance.LoadScene("Loading");
         CustomNetworkManager.Instance.StartClient();
     }
 
     public void OnHostButtonClick()
     {
+        SceneLoader.Instance.LoadScene("Loading");
         CustomNetworkManager.Instance.StartHost();
     }
 

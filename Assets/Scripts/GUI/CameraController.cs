@@ -41,9 +41,11 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
-        if (localPlayer == null) Debug.LogWarning($"LocalPlayer on MainCamera ({this.gameObject}) is null!");
-#endif
+        if (localPlayer == null)
+        {
+            Debug.LogWarning($"LocalPlayer on MainCamera ({this.gameObject}) is null!");
+            return;
+        }
 
         Vector3 destination = localPlayer.transform.position;
         destination.z = transform.position.z;
@@ -60,6 +62,19 @@ public class CameraController : MonoBehaviour
     public void PlayDamageFX()
     {
         animator.SetTrigger("play");
+    }
+
+    public void BackToMainMenu()
+    {
+        if (NetworkClient.activeHost)
+        {
+            NetworkServer.Shutdown();
+        }
+        NetworkClient.Shutdown();
+
+        Destroy(CustomNetworkManager.Instance.gameObject);
+        SceneLoader.Instance.LoadScene("Loading");
+        SceneLoader.Instance.LoadScene("Lobby");
     }
 
     // Editor GUI

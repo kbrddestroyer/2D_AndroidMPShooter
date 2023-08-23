@@ -154,6 +154,7 @@ namespace Telepathy
                 // this happens if (for example) the ip address is correct
                 // but there is no server running on that ip/port
                 Log.Info("[Telepathy] Client Recv: failed to connect to ip=" + ip + " port=" + port + " reason=" + exception);
+                
             }
             catch (ThreadInterruptedException)
             {
