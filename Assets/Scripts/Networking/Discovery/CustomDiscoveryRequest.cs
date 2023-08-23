@@ -6,5 +6,6 @@ using Mirror;
 public class CustomDiscoveryRequest : NetworkMessage
 {
     #region CLIENT
+
     #endregion
 }

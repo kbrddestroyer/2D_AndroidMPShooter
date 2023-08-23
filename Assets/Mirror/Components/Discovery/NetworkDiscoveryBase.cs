@@ -49,7 +49,8 @@ namespace Mirror.Discovery
 
         // Each game should have a random unique handshake,
         // this way you can tell if this is the same game or not
-        [HideInInspector]
+        // [HideInInspector]
+        
         public long secretHandshake;
 
         public long ServerId { get; private set; }
@@ -83,7 +84,7 @@ namespace Mirror.Discovery
             // Or just let the user assign it in the inspector
             if (transport == null)
                 transport = Transport.active;
-
+            Debug.Log("Init base discovery");
             // Server mode? then start advertising
 #if UNITY_SERVER
             AdvertiseServer();
@@ -178,13 +179,15 @@ namespace Mirror.Discovery
             BeginMulticastLock();
             while (true)
             {
+                Debug.Log("Server listen");
                 try
                 {
                     await ReceiveRequestAsync(serverUdpClient);
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException ex)
                 {
                     // socket has been closed
+                    Debug.LogException(ex);
                     break;
                 }
                 catch (Exception) {}
@@ -195,9 +198,9 @@ namespace Mirror.Discovery
         {
             // only proceed if there is available data in network buffer, or otherwise Receive() will block
             // average time for UdpClient.Available : 10 us
-
+            Debug.Log("Recieved a message from client!");
             UdpReceiveResult udpReceiveResult = await udpClient.ReceiveAsync();
-
+            
             using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(udpReceiveResult.Buffer))
             {
                 long handshake = networkReader.ReadLong();
@@ -208,7 +211,7 @@ namespace Mirror.Discovery
                 }
 
                 Request request = networkReader.Read<Request>();
-
+                Debug.Log("Incoming request!");
                 ProcessClientRequest(request, udpReceiveResult.RemoteEndPoint);
             }
         }
@@ -348,6 +351,7 @@ namespace Mirror.Discovery
         /// <returns>ClientListenAsync Task</returns>
         public async Task ClientListenAsync()
         {
+            Debug.Log("Client Listener!");
             // while clientUpdClient to fix:
             // https://github.com/vis2k/Mirror/pull/2908
             //
@@ -361,13 +365,15 @@ namespace Mirror.Discovery
             // the quest.
             while (clientUdpClient != null)
             {
+                Debug.Log("Listening...");
                 try
                 {
                     await ReceiveGameBroadcastAsync(clientUdpClient);
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException ex)
                 {
                     // socket was closed, no problem
+                    Debug.LogWarning(ex);
                     return;
                 }
                 catch (Exception ex)
@@ -383,8 +389,10 @@ namespace Mirror.Discovery
         public void BroadcastDiscoveryRequest()
         {
             if (clientUdpClient == null)
+            {
+                Debug.LogWarning("UDP Client is null");
                 return;
-
+            }
             if (NetworkClient.isConnected)
             {
                 StopDiscovery();
@@ -419,8 +427,9 @@ namespace Mirror.Discovery
 
                     clientUdpClient.SendAsync(data.Array, data.Count, endPoint);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Debug.LogError(e);
                     // It is ok if we can't broadcast to one of the addresses
                 }
             }
@@ -445,8 +454,10 @@ namespace Mirror.Discovery
             using (NetworkReaderPooled networkReader = NetworkReaderPool.Get(udpReceiveResult.Buffer))
             {
                 if (networkReader.ReadLong() != secretHandshake)
+                {
+                    Debug.LogError("Handshake is different!");
                     return;
-
+                }
                 Response response = networkReader.Read<Response>();
 
                 ProcessResponse(response, udpReceiveResult.RemoteEndPoint);

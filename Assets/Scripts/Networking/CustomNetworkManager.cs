@@ -42,6 +42,12 @@ public class CustomNetworkManager : NetworkManager
                 _player.Activated = (players.Count > minimumRequiredPlayers);
     }
 
+    public override void OnStartServer()
+    {
+        CustomNetworkDiscovery.Instance.AdvertiseServer();
+        base.OnStartServer();
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         GameObject player = Instantiate(playerPrefab);
