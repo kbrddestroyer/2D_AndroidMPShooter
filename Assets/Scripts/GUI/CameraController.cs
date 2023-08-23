@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -10,8 +11,18 @@ public class CameraController : MonoBehaviour
     [SerializeField, Range(0f, 10f)] private float triggerRadius;
     [Header("Required objects")]
     [SerializeField] private GameObject waitingForPlayerGUI;
+    [SerializeField] private TMP_Text coinsCounter;
+    [SerializeField] private TMP_Text HPCounter;
+    [SerializeField] private GameObject endgamePopup;
+    [SerializeField] private TMP_Text endgameText;
     [Header("Editor only")]
     [SerializeField] private Color gizmoColor;
+
+    public int Coins { set => coinsCounter.text = $"Coins: {value}"; }
+    public float HP { set => HPCounter.text = $"HP: {value}"; }
+    
+    public bool Endgame { set => endgamePopup.SetActive(value); }
+    public string EndgameText { set => endgameText.text = value; }
 
     private Player localPlayer;
 

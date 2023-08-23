@@ -8,6 +8,9 @@ public class Bullet : NetworkBehaviour
 {
     [SerializeField, Range(1f, 10f)] private float damage;
     [SerializeField, Range(0f, 10f)] private float speed;
+    [SerializeField, Range(0f, 10f)] private float lifetime;
+
+    private float lifetimeCurrent;
 
     public Transform StartPosition {
         set
@@ -45,17 +48,21 @@ public class Bullet : NetworkBehaviour
 
     private void Update()
     {
+        if (isServer)
+        {
+            lifetimeCurrent += Time.deltaTime;
+            if (lifetimeCurrent >= lifetime) ServerFree();
+        }
         transform.position += transform.up * speed * Time.deltaTime;
     }
 
-    [Command(requiresAuthority = false)]
-    private void CmdFree()
+    [Server]
+    private void ServerFree()
     {
+        lifetimeCurrent = 0;
         NetworkObjectPool.Instance.Free(gameObject);
     }
 
-    private void OnBecameInvisible()
-    {
-        CmdFree();
-    }
+    [Command(requiresAuthority = false)]
+    private void CmdFree() { ServerFree(); }
 }

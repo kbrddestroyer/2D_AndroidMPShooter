@@ -17,10 +17,19 @@ public class Player : NetworkBehaviour
     [SerializeField, Range(0f, 10f)] protected float speed;
     [SerializeField, Range(0f, 10f)] protected float maxHp;
     [SerializeField, Range(0f, 10f)] protected float bulletsPerSecond;
-    
-    private TMP_Text coinsCounter;
-    private TMP_Text HPCounter;
+
+    [SyncVar] private Color color;
+    public Color PlayerColor {
+        [Server]
+        set
+        {
+            color = value;
+            ChangeColor(color);
+        }
+    }
+
     protected Camera mainCamera;
+    protected CameraController cameraController;
 
     protected PlayerInput playerInput;
     protected InputAction move;
@@ -39,7 +48,7 @@ public class Player : NetworkBehaviour
 
         set {
             coins = value;
-            if (isOwned) coinsCounter.text = $"Coins: {coins}";
+            if (isOwned) cameraController.Coins = value;
         }
     }
 
@@ -49,7 +58,7 @@ public class Player : NetworkBehaviour
         {
             // Deal damage, update GUI and play VFX
             hp = value;
-            if (isOwned) HPCounter.text = $"HP: {hp}";
+            if (isOwned) cameraController.HP = value;
             if (hp <= 0) Death();
         }
     }
@@ -57,30 +66,56 @@ public class Player : NetworkBehaviour
     protected virtual void Start()
     {
         mainCamera = Camera.main;
+        cameraController = mainCamera.GetComponent<CameraController>();
 
-        if (isOwned) mainCamera.GetComponent<CameraController>().LocalPlayer = this; // Set LocalPlayer for camera to this device
+        if (isOwned) cameraController.LocalPlayer = this; // Set LocalPlayer for camera to this device
 
         playerInput = GetComponent<PlayerInput>();
         move = playerInput.actions["Move"];
         look = playerInput.actions["Look"];
-
-        coinsCounter = GameObject.Find("CoinsCounter").GetComponent<TMP_Text>();
-        HPCounter = GameObject.Find("HPCounter").GetComponent<TMP_Text>();
         HP = maxHp;
+        ChangeColorLocal(color);
     }
 
-#if UNITY_EDITOR
-    private void OnConnectedToServer()
+    [ClientRpc]
+    public void ChangeColor(Color color)
     {
-        Debug.LogWarning("Connected to server!");
+        ChangeColorLocal(color);
     }
-#endif
+
+    private void ChangeColorLocal(Color color)
+    {
+        GetComponent<SpriteRenderer>().color = color;
+        GetComponentInChildren<SpriteRenderer>().color = color;
+    }
+
+    [Command]
+    private void CmdDestroy()
+    {
+        CustomNetworkManager.Instance.RemovePlayerFromList(this);
+        NetworkServer.Destroy(this.gameObject);
+    }
 
     private void Death()
     {
         // TODO
-        if (isOwned) mainCamera.GetComponent<CameraController>().LocalPlayer = null;
-        Destroy(this.gameObject);
+        if (isOwned)
+        {
+            cameraController.LocalPlayer = FindObjectOfType<Player>();
+            cameraController.Endgame = true;
+            cameraController.EndgameText = $"You lose!\nYou've collected {coins} coin{((coins > 1) ? ' ' : 's')}!";
+        }
+        CmdDestroy();
+    }
+
+    [TargetRpc]
+    public void Win(NetworkConnectionToClient conn)
+    {
+        if (isOwned)
+        {
+            cameraController.Endgame = true;
+            cameraController.EndgameText = $"You win!\nYou've collected {coins} coin{((coins > 1) ? ' ' : 's')}!";
+        }
     }
 
     protected virtual void Update()

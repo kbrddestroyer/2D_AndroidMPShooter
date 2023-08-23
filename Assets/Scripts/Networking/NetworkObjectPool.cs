@@ -16,8 +16,7 @@ public class NetworkObjectPool : NetworkBehaviour
     [SerializeField] private Queue<GameObject> queue;
     [SerializeField] private NetworkIdentity prefab;
 
-    private int freeCount = 0;
-
+    #region CLIENT
     private void Start()
     {
         if (!instance) instance = this;
@@ -30,6 +29,16 @@ public class NetworkObjectPool : NetworkBehaviour
         ob.SetActive(value);
     }
 
+    [ClientRpc]
+    private void MoveObject(GameObject ob, Vector3 position, Quaternion rotation)
+    {
+        ob.transform.position = position;
+        ob.transform.rotation = rotation;
+    }
+    #endregion
+
+    #region SERVER
+
     [ServerCallback]
     private GameObject Add()
     {
@@ -39,23 +48,20 @@ public class NetworkObjectPool : NetworkBehaviour
         return ob;
     }
 
+    [ServerCallback]
     public GameObject Get(Vector3 position, Quaternion rotation)
     {
         GameObject next = (queue.Count > 0) ? queue.Dequeue() : Add();
-        next.transform.position = position;
-        next.transform.rotation = rotation;
+        MoveObject(next, position, rotation);
         SetObjectState(next, true);
         return next;
     }
 
+    [ServerCallback]
     public void Free(GameObject poolObject)
     {
-        if (queue.Count > maxSize) NetworkServer.Destroy(poolObject);
-        else
-        {
-            SetObjectState(poolObject, false);
-            queue.Enqueue(poolObject);
-        }
+        SetObjectState(poolObject, false);
+        queue.Enqueue(poolObject);
     }
 
     [Command(requiresAuthority = false)]
@@ -67,4 +73,6 @@ public class NetworkObjectPool : NetworkBehaviour
             queue.Enqueue(Add());
         }
     }
+
+    #endregion
 }

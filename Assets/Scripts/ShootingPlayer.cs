@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ShootingPlayer : Player, IShooting
@@ -19,8 +20,15 @@ public class ShootingPlayer : Player, IShooting
         set
         {
             activated = true;
-            Camera.main.GetComponent<CameraController>().ChangeWaitingForPlayerValue(!value);
+            RegisterCameraValue(!value);
         }
+    }
+
+    private async void RegisterCameraValue(bool value)
+    {
+        while (cameraController == null) await Task.Yield();
+
+        cameraController.ChangeWaitingForPlayerValue(value);
     }
 
     #region SERVER
@@ -28,7 +36,7 @@ public class ShootingPlayer : Player, IShooting
     [Command]
     private void CmdCreateBullet()
     {
-        Bullet _bullet = GameObject.FindObjectOfType<NetworkObjectPool>().Get(bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
+        Bullet _bullet = NetworkObjectPool.Instance.Get(bulletSpawnPoint.position, bulletSpawnPoint.rotation).GetComponent<Bullet>();
     }
 
     #endregion

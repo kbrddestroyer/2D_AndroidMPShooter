@@ -7,6 +7,10 @@ using Mirror.Discovery;
 
 public class CustomNetworkManager : NetworkManager
 {
+    [SerializeField] private Color[] colors;
+    [Header("Debug")]
+    [SerializeField, Range(0f, 10f)] private int minimumRequiredPlayers;
+
     private static CustomNetworkManager instance;
     private NetworkDiscovery networkDiscovery;
     public static CustomNetworkManager Instance { get => instance; }
@@ -26,16 +30,30 @@ public class CustomNetworkManager : NetworkManager
         this.networkAddress = destination;
     }
 
+    public void RemovePlayerFromList(Player player)
+    {
+        players.Remove(player);
+        if (players.Count == 1)
+        {
+            players[0].Win(players[0].GetComponent<NetworkIdentity>().connectionToClient);
+        }
+        else
+            foreach (ShootingPlayer _player in players)
+                _player.Activated = (players.Count > minimumRequiredPlayers);
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         GameObject player = Instantiate(playerPrefab);
+        Player playerComponent = player.GetComponent<Player>();
+        
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        players.Add(player.GetComponent<Player>());
-        
+        players.Add(playerComponent);
+        playerComponent.PlayerColor = colors[players.Count - 1];
         foreach (ShootingPlayer _player in players)
         {
-            _player.Activated = (players.Count > 0);   
+            _player.Activated = (players.Count > minimumRequiredPlayers);   
         }
     }
 
@@ -49,7 +67,7 @@ public class CustomNetworkManager : NetworkManager
                 players.Remove(player);
                 correction = 0;
             }
-            else player.Activated = (players.Count - correction > 0);
+            else player.Activated = (players.Count - correction > minimumRequiredPlayers);
         NetworkServer.DestroyPlayerForConnection(conn);
     }
 }
