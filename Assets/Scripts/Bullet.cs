@@ -51,7 +51,7 @@ public class Bullet : NetworkBehaviour
     [Command(requiresAuthority = false)]
     private void CmdFree()
     {
-        GameObject.FindObjectOfType<NetworkObjectPool>().Free(this.gameObject);
+        NetworkObjectPool.Instance.Free(gameObject);
     }
 
     private void OnBecameInvisible()

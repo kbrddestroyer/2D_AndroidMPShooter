@@ -6,7 +6,8 @@ using UnityEngine.Pool;
 
 public class NetworkObjectPool : NetworkBehaviour
 {
-    public static NetworkObjectPool instance;
+    private static NetworkObjectPool instance;
+    public static NetworkObjectPool Instance { get => instance; }
 
     [Header("Pool size")]
     [SerializeField, Range(0, 100)] private int startSize;
