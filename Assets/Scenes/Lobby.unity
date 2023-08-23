@@ -980,7 +980,7 @@ PrefabInstance:
       objectReference: {fileID: 807314686}
     - target: {fileID: 8864935351948212219, guid: 9f6359883240230478196e5156510e2f, type: 3}
       propertyPath: minimumRequiredPlayers
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f6359883240230478196e5156510e2f, type: 3}
