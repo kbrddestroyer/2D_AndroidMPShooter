@@ -20,6 +20,14 @@ public class Bullet : NetworkBehaviour
         }
     }
 
+
+    [ClientRpc]
+    public void setActivated(bool isActive)
+    {
+        this.gameObject.SetActive(isActive);
+    }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Player player = collision.gameObject.GetComponent<Player>();
@@ -29,13 +37,7 @@ public class Bullet : NetworkBehaviour
         }
         CmdFree();
     }
-
-    [ClientRpc]
-    public void setActivated(bool isActive)
-    {
-        this.gameObject.SetActive(isActive);
-    }
-
+    
     private void Update()
     {
         if (isServer)

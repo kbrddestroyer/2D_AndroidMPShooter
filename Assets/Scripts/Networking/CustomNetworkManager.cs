@@ -30,6 +30,7 @@ public class CustomNetworkManager : NetworkManager
         this.networkAddress = destination;
     }
 
+    #region SERVER
     public void RemovePlayerFromList(Player player)
     {
         players.Remove(player);
@@ -42,15 +43,10 @@ public class CustomNetworkManager : NetworkManager
                 _player.Activated = (players.Count > minimumRequiredPlayers);
     }
 
-    public override void OnStartServer()
-    {
-        CustomNetworkDiscovery.Instance.AdvertiseServer();
-        base.OnStartServer();
-    }
-
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        GameObject player = Instantiate(playerPrefab);
+        Transform startPos = GetStartPosition();
+        GameObject player = Instantiate(playerPrefab, startPos.position, startPos.rotation);
         Player playerComponent = player.GetComponent<Player>();
         
         NetworkServer.AddPlayerForConnection(conn, player);
@@ -76,4 +72,5 @@ public class CustomNetworkManager : NetworkManager
             else player.Activated = (players.Count - correction > minimumRequiredPlayers);
         NetworkServer.DestroyPlayerForConnection(conn);
     }
+    #endregion
 }

@@ -57,8 +57,12 @@ public class Player : NetworkBehaviour
         set
         {
             // Deal damage, update GUI and play VFX
+            if (isOwned)
+            {
+                cameraController.HP = value;
+                if (hp > value) cameraController.PlayDamageFX();
+            }
             hp = value;
-            if (isOwned) cameraController.HP = value;
             if (hp <= 0) Death();
         }
     }
@@ -86,7 +90,10 @@ public class Player : NetworkBehaviour
     private void ChangeColorLocal(Color color)
     {
         GetComponent<SpriteRenderer>().color = color;
-        GetComponentInChildren<SpriteRenderer>().color = color;
+        foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = color;
+        }
     }
 
     [Command]
@@ -103,7 +110,7 @@ public class Player : NetworkBehaviour
         {
             cameraController.LocalPlayer = FindObjectOfType<Player>();
             cameraController.Endgame = true;
-            cameraController.EndgameText = $"You lose!\nYou've collected {coins} coin{((coins > 1) ? ' ' : 's')}!";
+            cameraController.EndgameText = $"You lose!\nYou've collected {coins} coin{((coins > 1) ? "s!" : '!')}";
         }
         CmdDestroy();
     }
@@ -114,7 +121,7 @@ public class Player : NetworkBehaviour
         if (isOwned)
         {
             cameraController.Endgame = true;
-            cameraController.EndgameText = $"You win!\nYou've collected {coins} coin{((coins > 1) ? ' ' : 's')}!";
+            cameraController.EndgameText = $"You win!\nYou've collected {coins} coin{((coins > 1) ? "s!" : '!')}";
         }
     }
 

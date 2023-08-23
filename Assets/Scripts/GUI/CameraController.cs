@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -22,6 +23,7 @@ public class CameraController : MonoBehaviour
     public float HP { set => HPCounter.text = $"HP: {value}"; }
     
     public bool Endgame { set => endgamePopup.SetActive(value); }
+    public bool Waiting { set => waitingForPlayerGUI.SetActive(value); }
     public string EndgameText { set => endgameText.text = value; }
 
     private Player localPlayer;
@@ -30,9 +32,11 @@ public class CameraController : MonoBehaviour
 
     private bool isMoving = false;
 
-    public void ChangeWaitingForPlayerValue(bool value)
+    private Animator animator;
+
+    private void Awake()
     {
-        waitingForPlayerGUI.SetActive(value);
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -52,6 +56,12 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // VFX
+    public void PlayDamageFX()
+    {
+        animator.SetTrigger("play");
+    }
+
     // Editor GUI
 
 #if UNITY_EDITOR
@@ -61,4 +71,10 @@ public class CameraController : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, triggerRadius);
     }
 #endif
+
+    [Obsolete]
+    public void ChangeWaitingForPlayerValue(bool value)
+    {
+        waitingForPlayerGUI.SetActive(value);
+    }
 }

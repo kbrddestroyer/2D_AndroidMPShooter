@@ -28,7 +28,7 @@ public class ShootingPlayer : Player, IShooting
     {
         while (cameraController == null) await Task.Yield();
 
-        cameraController.ChangeWaitingForPlayerValue(value);
+        cameraController.Waiting = value;
     }
 
     #region SERVER

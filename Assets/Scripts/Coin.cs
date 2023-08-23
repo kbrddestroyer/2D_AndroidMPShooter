@@ -18,9 +18,7 @@ public class Coin : NetworkBehaviour
 
     private IEnumerator Respawn()
     {
-        Debug.Log("Start!");
         yield return new WaitForSeconds(delay);
-        Debug.Log("Complete!");
         RpcSetActive(true);
     }
 
